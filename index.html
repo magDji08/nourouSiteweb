@@ -489,6 +489,17 @@
       font-size: 15px; line-height: 1.8; color: var(--text);
     }
 
+    .about-img-banner {
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 48px;
+    }
+
+    .about-img-banner img {
+      width: 100%; height: 280px;
+      object-fit: cover; display: block;
+    }
+
     .section-label {
       display: inline-flex; align-items: center; gap: 8px;
       color: var(--blue); font-size: 12px; font-weight: 500;
@@ -1091,6 +1102,7 @@
       .hero-title { font-size: 52px; }
       .about-inner { grid-template-columns: 1fr; gap: 60px; }
       .about-columns { grid-template-columns: 1fr 1fr; gap: 36px; }
+      .about-img-banner img { height: 220px; }
       .about-visual { grid-template-columns: 1fr 1fr; }
       .about-hero-img { grid-column: span 2; }
       .about-hero-img img { height: 180px; }
@@ -1127,6 +1139,8 @@
       #social-proof { padding: 56px 0; }
       .about-inner { gap: 48px; }
       .about-columns { grid-template-columns: 1fr; gap: 32px; }
+      .about-img-banner img { height: 200px; }
+      .about-img-banner { margin-bottom: 36px; }
       .about-visual { grid-template-columns: 1fr; }
       .about-hero-img { grid-column: span 1; }
       .about-hero-img img { height: 180px; }
@@ -1183,6 +1197,8 @@
       #social-proof { padding: 48px 0; }
       .section-title { font-size: 24px; }
       .section-label { font-size: 11px; }
+      .about-img-banner img { height: 160px; }
+      .about-img-banner { margin-bottom: 28px; border-radius: 12px; }
       .about-list li { font-size: 13px; gap: 10px; }
       .about-card { padding: 20px; }
       .about-card h4 { font-size: 14px; }
@@ -1499,6 +1515,10 @@
       <p class="section-body reveal reveal-delay-2" style="margin-bottom:0">UP'DAT est une Startup spécialisée dans l'offre de biens et de services numériques.</p>
     </div>
 
+    <div class="about-img-banner reveal">
+      <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1100&h=350&fit=crop&q=80" alt="Équipe UP'DAT en collaboration" loading="lazy">
+    </div>
+
     <div class="about-columns">
       <div class="about-col reveal">
         <p class="section-body">
@@ -1536,6 +1556,7 @@
     <!-- Main service cards -->
     <div class="services-grid services-grid-4">
       <div class="service-card reveal">
+        <img class="service-card-img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop&q=80" alt="Analyse de données et datamining" loading="lazy">
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
         </div>
@@ -1544,6 +1565,7 @@
       </div>
 
       <div class="service-card reveal reveal-delay-1">
+        <img class="service-card-img" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=250&fit=crop&q=80" alt="Formulaires numériques d'enquête" loading="lazy">
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         </div>
@@ -1552,6 +1574,7 @@
       </div>
 
       <div class="service-card reveal reveal-delay-2">
+        <img class="service-card-img" src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=250&fit=crop&q=80" alt="Applications mobiles et web" loading="lazy">
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
         </div>
@@ -1560,6 +1583,7 @@
       </div>
 
       <div class="service-card reveal reveal-delay-3">
+        <img class="service-card-img" src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=250&fit=crop&q=80" alt="Digitalisation des processus" loading="lazy">
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         </div>
