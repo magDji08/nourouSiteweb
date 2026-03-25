@@ -480,6 +480,15 @@
       gap: 100px; align-items: center;
     }
 
+    .about-columns {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 48px; align-items: start;
+    }
+
+    .about-col .section-body {
+      font-size: 15px; line-height: 1.8; color: var(--text);
+    }
+
     .section-label {
       display: inline-flex; align-items: center; gap: 8px;
       color: var(--blue); font-size: 12px; font-weight: 500;
@@ -589,6 +598,46 @@
       gap: 24px;
     }
 
+    .services-grid-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .services-compact {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .service-compact-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex; align-items: flex-start; gap: 14px;
+      transition: all 0.3s var(--ease);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .service-compact-item:hover {
+      border-color: rgba(37,99,235,0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px -8px rgba(0,0,0,0.08);
+    }
+
+    .service-compact-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(37,99,235,0.04));
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .service-compact-item h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px; font-weight: 600;
+      color: var(--white); line-height: 1.5;
+    }
+
     .service-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -666,7 +715,7 @@
     }
 
     .team-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
     }
 
     .team-card {
@@ -722,18 +771,12 @@
 
     .team-card h4 {
       font-family: 'Syne', sans-serif;
-      font-size: 14px; font-weight: 700; color: var(--white);
-      margin-bottom: 6px;
-    }
-
-    .team-card .role {
-      font-size: 12px; color: var(--blue);
-      font-weight: 500; letter-spacing: 0.5px;
+      font-size: 15px; font-weight: 700; color: var(--white);
       margin-bottom: 10px;
     }
 
     .team-card .desc {
-      font-size: 12px; color: var(--muted); line-height: 1.6;
+      font-size: 13px; color: var(--muted); line-height: 1.6;
     }
 
     /* ─── CONTACT ───────────────────────────────────────────────────────────── */
@@ -1047,11 +1090,14 @@
       .hero-visual { display: none; }
       .hero-title { font-size: 52px; }
       .about-inner { grid-template-columns: 1fr; gap: 60px; }
+      .about-columns { grid-template-columns: 1fr 1fr; gap: 36px; }
       .about-visual { grid-template-columns: 1fr 1fr; }
       .about-hero-img { grid-column: span 2; }
       .about-hero-img img { height: 180px; }
       .service-card-img { height: 140px; }
       .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .services-grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .services-compact { grid-template-columns: repeat(2, 1fr); }
       .team-grid { grid-template-columns: repeat(2, 1fr); }
       .contact-inner { grid-template-columns: 1fr; gap: 50px; }
       .footer-inner { grid-template-columns: 1fr 1fr; gap: 40px; }
@@ -1080,6 +1126,7 @@
       #about, #services, #team, #contact { padding: 70px 0; }
       #social-proof { padding: 56px 0; }
       .about-inner { gap: 48px; }
+      .about-columns { grid-template-columns: 1fr; gap: 32px; }
       .about-visual { grid-template-columns: 1fr; }
       .about-hero-img { grid-column: span 1; }
       .about-hero-img img { height: 180px; }
@@ -1092,6 +1139,8 @@
       }
       .about-list li { font-size: 14px; }
       .services-grid { grid-template-columns: 1fr; gap: 16px; }
+      .services-grid-4 { grid-template-columns: 1fr; }
+      .services-compact { grid-template-columns: 1fr 1fr; gap: 12px; }
       .service-card { padding: 28px 24px; }
       .team-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
       .team-card { padding: 24px 16px; }
@@ -1153,9 +1202,8 @@
       .team-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
       .team-card { padding: 20px 12px; border-radius: 16px; }
       .team-card h4 { font-size: 13px; }
-      .team-card .role { font-size: 11px; }
       .team-card .desc { font-size: 10px; }
-      .team-avatar { width: 52px; height: 52px; font-size: 18px; }
+      .services-compact { grid-template-columns: 1fr; }
       .stats-grid { grid-template-columns: 1fr 1fr; }
       .stat-num { font-size: 32px; }
       .stat-item { padding: 20px 12px; }
@@ -1445,57 +1493,32 @@
 <!-- ─── ABOUT ─────────────────────────────────────────────────────────────── -->
 <section id="about">
   <div class="container">
-    <div class="about-inner">
-      <div>
-        <div class="section-label reveal">À propos</div>
-        <h2 class="section-title reveal reveal-delay-1">Une startup sénégalaise au cœur de l'innovation</h2>
-        <p class="section-body reveal reveal-delay-2">
-          UP'DAT est une startup spécialisée dans l'offre de biens et services numériques. Notre équipe multidisciplinaire intervient dans tous les secteurs pour numériser vos besoins avec des solutions sur mesure.
+    <div class="section-header">
+      <div class="section-label reveal">A propos</div>
+      <h2 class="section-title reveal reveal-delay-1">En apprendre plus <span style="color: var(--blue);">Sur Nous</span></h2>
+      <p class="section-body reveal reveal-delay-2" style="margin-bottom:0">UP'DAT est une Startup spécialisée dans l'offre de biens et de services numériques.</p>
+    </div>
+
+    <div class="about-columns">
+      <div class="about-col reveal">
+        <p class="section-body">
+          Composée d'une équipe multidisciplinaire UP'DAT compte intervenir, quel que soit le secteur d'activités, dans la numérisation des besoins identifiés par nos potentiels clients et partenaires avec des offres sur mesure liées au :
         </p>
-        <ul class="about-list reveal reveal-delay-3">
-          <li>Management des structures et organisations</li>
-          <li>Innovation via les NTIC</li>
-          <li>Suivi & évaluation de projets</li>
+        <ul class="about-list">
+          <li>Management des structures</li>
+          <li>Appui dans la mise en place d'une innovation utilisant les NTIC</li>
+          <li>Suivi/Evaluation de projets</li>
           <li>Recherche opérationnelle</li>
+          <li>Suivi personnalisé</li>
           <li>Renforcement de capacités</li>
-          <li>Développement organisationnel PME</li>
+          <li>Développement organisationnel des petites et moyennes entreprises</li>
         </ul>
       </div>
-
-      <div class="about-visual">
-        <div class="about-hero-img reveal">
-          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop&q=80" alt="Équipe collaborative travaillant sur des solutions numériques" loading="lazy">
-        </div>
-        <div class="about-card about-card-wide reveal">
-          <div class="about-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          </div>
-          <div>
-            <h4>Approche sur mesure</h4>
-            <p>Chaque solution est conçue spécifiquement pour répondre à vos défis uniques.</p>
-          </div>
-        </div>
-        <div class="about-card reveal reveal-delay-1">
-          <div class="about-icon">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          </div>
-          <h4>Réactivité</h4>
-          <p>Suivi personnalisé et réponse sous 24h garantie.</p>
-        </div>
-        <div class="about-card reveal reveal-delay-2">
-          <div class="about-icon">
-            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-          </div>
-          <h4>Expertise collective</h4>
-          <p>Docteurs, ingénieurs et spécialistes réunis pour vous.</p>
-        </div>
-        <div class="about-card reveal reveal-delay-3">
-          <div class="about-icon">
-            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          </div>
-          <h4>Impact mesurable</h4>
-          <p>Des KPIs clairs pour chaque projet livré.</p>
-        </div>
+      <div class="about-col reveal reveal-delay-1">
+        <p class="section-body">
+          Son objectif est d'améliorer l'efficacité et la synergie dans la gestion des services et des données à travers la dématérialisation des procédures, une plus grande productivité avec une réduction des coûts et des délais des transactions et opérations mais aussi la mise en place d'outils adaptés à l'ère du numérique pour la gestion.
+        </p>
+        <a href="#services" class="btn-ghost" style="margin-top: 16px;">Plus d'informations</a>
       </div>
     </div>
   </div>
@@ -1506,69 +1529,102 @@
   <div class="container">
     <div class="section-header">
       <div class="section-label reveal">Nos services</div>
-      <h2 class="section-title reveal reveal-delay-1">Votre vision,<br>notre expertise</h2>
-      <p class="section-body reveal reveal-delay-2" style="margin-bottom:0">Une gamme complète de services numériques sur mesure pour propulser votre organisation.</p>
+      <h2 class="section-title reveal reveal-delay-1">Transformez Votre Vision en Réalité Numérique avec UP'DAT : Découvrez <span style="color: var(--blue);">Nos Services Innovants</span></h2>
+      <p class="section-body reveal reveal-delay-2" style="margin-bottom:0">Chez UP'DAT, nous sommes passionnés par l'innovation numérique et nous nous engageons à transformer vos idées en solutions concrètes. Explorez notre gamme complète de services numériques sur mesure, conçus pour stimuler votre entreprise vers l'excellence technologique.</p>
     </div>
 
-    <div class="services-grid">
-      <div class="service-card featured reveal">
-        <img class="service-card-img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop&q=80" alt="Analyse de données et visualisation" loading="lazy">
-        <div class="service-num">01</div>
+    <!-- Main service cards -->
+    <div class="services-grid services-grid-4">
+      <div class="service-card reveal">
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
         </div>
-        <h3>Analyse de Données (Datamining)</h3>
-        <p>Collecte, traitement et visualisation de données complexes pour révéler les insights qui guident vos décisions stratégiques.</p>
+        <h3>Analyse de données (Datamining)</h3>
+        <p>Notre équipe experte vous guide dans l'analyse approfondie des données, dévoilant des insights cruciaux pour votre entreprise.</p>
       </div>
 
       <div class="service-card reveal reveal-delay-1">
-        <img class="service-card-img" src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=250&fit=crop&q=80" alt="Développement applications mobiles" loading="lazy">
-        <div class="service-num">02</div>
+        <div class="service-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <h3>Création de formulaires numériques d'enquête ou de suivi</h3>
+        <p>Concevez des formulaires numériques intuitifs pour recueillir des informations précieuses et optimiser vos processus.</p>
+      </div>
+
+      <div class="service-card reveal reveal-delay-2">
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
         </div>
         <h3>Applications Mobiles & Web</h3>
-        <p>Conception et développement d'apps mobiles et de sites web sur mesure, optimisés pour l'expérience utilisateur.</p>
-      </div>
-
-      <div class="service-card reveal reveal-delay-2">
-        <img class="service-card-img" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=250&fit=crop&q=80" alt="Formulaires numériques d'enquête" loading="lazy">
-        <div class="service-num">03</div>
-        <div class="service-icon-wrap">
-          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        </div>
-        <h3>Formulaires Numériques d'Enquête</h3>
-        <p>Conception de formulaires digitaux intuitifs pour la collecte de données terrain, enquêtes de satisfaction et suivi de projets.</p>
+        <p>Conception et développement d'applications mobiles et web sur mesure, optimisées pour l'expérience utilisateur.</p>
       </div>
 
       <div class="service-card reveal reveal-delay-3">
-        <img class="service-card-img" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop&q=80" alt="Tableaux de bord interactifs" loading="lazy">
-        <div class="service-num">04</div>
-        <div class="service-icon-wrap">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        </div>
-        <h3>Tableaux de Bord (Dashboard)</h3>
-        <p>Pilotage et supervision de vos projets via des dashboards interactifs, avec analyse en temps réel.</p>
-      </div>
-
-      <div class="service-card featured reveal reveal-delay-4">
-        <img class="service-card-img" src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=250&fit=crop&q=80" alt="Digitalisation des processus" loading="lazy">
-        <div class="service-num">05</div>
         <div class="service-icon-wrap">
           <svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         </div>
-        <h3>Digitalisation des Processus</h3>
-        <p>Dématérialisez vos procédures métiers pour plus d'efficacité, de productivité et de réduction des coûts.</p>
+        <h3>Digitalisation et proposition de méthodes d'aides à la décision pour les entreprises et services</h3>
+        <p>Transformez vos processus avec notre expertise en digitalisation et bénéficiez de méthodes d'aide à la décision pour une croissance optimale.</p>
       </div>
+    </div>
 
-      <div class="service-card reveal reveal-delay-4">
-        <img class="service-card-img" src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&h=250&fit=crop&q=80" alt="Cartographie digitale" loading="lazy">
-        <div class="service-num">06</div>
-        <div class="service-icon-wrap">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+    <!-- Compact service items -->
+    <div class="services-compact">
+      <div class="service-compact-item reveal">
+        <div class="service-compact-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--blue)" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
         </div>
-        <h3>Cartographie Digitale</h3>
-        <p>Création de solutions de cartographie digitale pour la gestion et la visualisation de données géographiques.</p>
+        <div>
+          <h4>Gestion et vulgarisation de votre marque</h4>
+        </div>
+      </div>
+      <div class="service-compact-item reveal reveal-delay-1">
+        <div class="service-compact-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--blue)" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <div>
+          <h4>Création de tableau de bord pour les projets</h4>
+        </div>
+      </div>
+      <div class="service-compact-item reveal reveal-delay-2">
+        <div class="service-compact-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--blue)" stroke-width="1.5"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+        </div>
+        <div>
+          <h4>Création de dossier client/patient</h4>
+        </div>
+      </div>
+      <div class="service-compact-item reveal reveal-delay-3">
+        <div class="service-compact-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--blue)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+        </div>
+        <div>
+          <h4>Création de cartographie digitale</h4>
+        </div>
+      </div>
+      <div class="service-compact-item reveal">
+        <div class="service-compact-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--blue)" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+        </div>
+        <div>
+          <h4>Réalisation d'enquête rapides, d'enquête de satisfaction via une application mobile</h4>
+        </div>
+      </div>
+      <div class="service-compact-item reveal reveal-delay-1">
+        <div class="service-compact-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--blue)" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div>
+          <h4>Pilotage, supervision et analyse de données d'enquêtes de terrain via les NTIC</h4>
+        </div>
+      </div>
+      <div class="service-compact-item reveal reveal-delay-2">
+        <div class="service-compact-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--blue)" stroke-width="1.5"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+        </div>
+        <div>
+          <h4>Renforcement de capacités sur l'utilisation optimale des TIC sur le travail quotidien</h4>
+        </div>
       </div>
     </div>
   </div>
@@ -1737,10 +1793,10 @@
 <!-- ─── CTA BAND ───────────────────────────────────────────────────────────── -->
 <section class="cta-band">
   <div class="container">
-    <h2 class="reveal">Prêt à digitaliser vos processus ?</h2>
-    <p class="reveal reveal-delay-1">Notre équipe d'experts vous accompagne de la conception au déploiement.</p>
+    <h2 class="reveal">Explorez les Possibilités</h2>
+    <p class="reveal reveal-delay-1">Transformez votre vision en réalité avec notre expertise numérique exceptionnelle. Nous sommes là pour vous aider à atteindre vos objectifs.</p>
     <a href="#contact" class="btn-cta-white reveal reveal-delay-2">
-      Démarrer votre projet
+      Contactez-nous
       <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
   </div>
