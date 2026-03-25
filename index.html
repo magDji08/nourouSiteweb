@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UP'DAT — Data Analysis & Technologie</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <script type="module" src="https://unpkg.com/@lottiefiles/dotlottie-wc@latest/dist/dotlottie-wc.js"></script>
+  <style>
+    /* ─── RESET & ROOT ─────────────────────────────────────────────────────── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:        #ffffff;
+      --bg2:       #f8fafc;
+      --surface:   #ffffff;
+      --border:    #e2e8f0;
+      --blue:      #2563eb;
+      --blue-glow: rgba(37, 99, 235, 0.15);
+      --blue-dim:  rgba(37, 99, 235, 0.05);
+      --text:      #334155;
+      --muted:     #64748b;
+      --white:     #0f172a;
+      --radius:    16px;
+      --ease:      cubic-bezier(0.16,1,0.3,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ─── SCROLLBAR ─────────────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 2px; }
+
+    /* ─── NOISE TEXTURE OVERLAY ─────────────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: 0.02;
+    }
+
+    /* ─── LAYOUT ────────────────────────────────────────────────────────────── */
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    section { position: relative; overflow: hidden; }
+
+    /* ─── NAV ───────────────────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 24px 0;
+      transition: all 0.4s var(--ease);
+    }
+
+    nav.scrolled {
+      padding: 14px 0;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      width: 38px; height: 38px;
+      background: var(--blue);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800; font-size: 18px; color: white;
+      box-shadow: 0 0 20px var(--blue-glow);
+    }
+
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700; font-size: 20px; color: var(--white);
+      letter-spacing: -0.3px;
+    }
+
+    .logo-text span { color: var(--blue); }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 14px; font-weight: 500;
+      letter-spacing: 0.2px;
+      transition: color 0.25s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0; width: 0; height: 1px;
+      background: var(--blue);
+      transition: width 0.3s var(--ease);
+    }
+
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      background: var(--blue);
+      color: white !important;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-weight: 500 !important;
+      font-size: 14px !important;
+      transition: all 0.3s !important;
+      box-shadow: 0 0 0 0 var(--blue-glow);
+    }
+
+    .nav-cta:hover {
+      background: #2563eb !important;
+      box-shadow: 0 0 0 8px var(--blue-glow) !important;
+      transform: translateY(-1px);
+    }
+
+    .nav-cta::after { display: none !important; }
+
+    /* Mobile menu */
+    .hamburger {
+      display: none;
+      flex-direction: column; gap: 5px;
+      cursor: pointer; background: none; border: none; padding: 4px;
+    }
+
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--text);
+      transition: all 0.3s;
+      border-radius: 2px;
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 99;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(20px);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 32px;
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-menu a {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px; font-weight: 700;
+      color: var(--text); text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .mobile-menu a:hover { color: var(--blue); }
+
+    .close-menu {
+      position: absolute; top: 24px; right: 28px;
+      background: none; border: none; color: var(--muted);
+      font-size: 32px; cursor: pointer;
+      line-height: 1;
+    }
+
+    /* ─── HERO ──────────────────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 0 80px;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(37,99,235,0.07) 0%, transparent 70%),
+        var(--bg);
+    }
+
+    canvas#particles {
+      position: absolute; inset: 0; z-index: 0;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--blue-dim);
+      border: 1px solid rgba(37,99,235,0.2);
+      border-radius: 50px;
+      padding: 6px 16px;
+      font-size: 12px; font-weight: 500; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--blue);
+      margin-bottom: 28px;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--blue);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--blue);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(40px, 5.5vw, 68px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -1.5px;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+
+    .hero-title .accent {
+      color: var(--blue);
+      background: linear-gradient(120deg, rgba(37,99,235,0.1) 0%, rgba(37,99,235,0.1) 100%);
+      background-repeat: no-repeat;
+      background-size: 100% 30%;
+      background-position: 0 88%;
+    }
+
+    .hero-title .gradient {
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 17px; color: var(--muted);
+      line-height: 1.75; max-width: 460px;
+      margin-bottom: 40px;
+    }
+
+    .hero-actions {
+      display: flex; gap: 16px; flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--blue);
+      color: white; text-decoration: none;
+      font-weight: 500; font-size: 15px;
+      padding: 14px 28px; border-radius: 12px;
+      transition: all 0.3s var(--ease);
+      box-shadow: 0 8px 24px var(--blue-glow);
+    }
+
+    .btn-primary:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 16px 32px var(--blue-glow);
+    }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent;
+      color: var(--text); text-decoration: none;
+      font-weight: 500; font-size: 15px;
+      padding: 14px 28px; border-radius: 12px;
+      border: 1px solid var(--border);
+      transition: all 0.3s var(--ease);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--blue-dim);
+    }
+
+    /* Hero Visual */
+    .hero-visual {
+      position: relative;
+    }
+
+    .hero-card-main {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
+    }
+
+    .hero-card-main::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--blue), transparent);
+    }
+
+    .card-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 28px;
+    }
+
+    .card-dots { display: flex; gap: 6px; }
+    .card-dots span {
+      width: 10px; height: 10px; border-radius: 50%;
+    }
+    .card-dots span:nth-child(1) { background: #ff5f56; }
+    .card-dots span:nth-child(2) { background: #ffbd2e; }
+    .card-dots span:nth-child(3) { background: #27c93f; }
+
+    .card-title-sm {
+      font-size: 12px; color: var(--muted); letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ─── SERVICE CARD IMAGES ─────────────────────────────────────────────── */
+    .service-card-img {
+      width: calc(100% + 64px);
+      height: 160px;
+      object-fit: cover;
+      margin: -36px -32px 20px -32px;
+      border-radius: 20px 20px 0 0;
+      display: block;
+    }
+
+    .service-card.featured .service-card-img {
+      border-radius: 20px 20px 0 0;
+    }
+
+    /* ─── ABOUT HERO IMAGE ──────────────────────────────────────────────────── */
+    .about-hero-img {
+      grid-column: span 2;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .about-hero-img img {
+      width: 100%; height: 200px;
+      object-fit: cover; display: block;
+    }
+
+    .floating-badge {
+      position: absolute;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex; align-items: center; gap: 10px;
+      white-space: nowrap;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      animation: floatAnim 4s ease-in-out infinite;
+    }
+
+    @keyframes floatAnim {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-8px); }
+    }
+
+    .floating-badge.top-right {
+      top: -20px; right: -20px;
+      animation-delay: 0.5s;
+    }
+
+    .floating-badge.bottom-left {
+      bottom: -20px; left: -20px;
+      animation-delay: 1.5s;
+    }
+
+    .badge-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+
+    .badge-icon.green { background: rgba(16,185,129,0.2); }
+    .badge-icon.purple { background: rgba(129,140,248,0.2); }
+
+    .badge-text .val {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px; font-weight: 700; color: var(--white);
+      display: block;
+    }
+
+    .badge-text .sub { font-size: 11px; color: var(--muted); }
+
+    /* Hero scroll indicator */
+    .scroll-indicator {
+      position: absolute; bottom: 40px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--muted); font-size: 11px; letter-spacing: 2px;
+      text-transform: uppercase;
+      animation: fadeInUp 1s ease 1.5s both;
+    }
+
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--blue), transparent);
+      animation: lineScroll 2s ease infinite;
+    }
+
+    @keyframes lineScroll {
+      0%   { transform: scaleY(0); transform-origin: top; }
+      50%  { transform: scaleY(1); transform-origin: top; }
+      51%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* ─── STATS BAR ─────────────────────────────────────────────────────────── */
+    #stats {
+      padding: 60px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+    }
+
+    .stat-item {
+      padding: 32px; text-align: center;
+      position: relative;
+    }
+
+    .stat-item:not(:last-child)::after {
+      content: '';
+      position: absolute; right: 0; top: 20%; bottom: 20%;
+      width: 1px; background: var(--border);
+    }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 48px; font-weight: 800;
+      color: var(--white); line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-num span { color: var(--blue); }
+
+    .stat-label { font-size: 14px; color: var(--muted); }
+
+    /* ─── ABOUT ─────────────────────────────────────────────────────────────── */
+    #about {
+      padding: 120px 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 80% 50%, rgba(37,99,235,0.04) 0%, transparent 70%),
+        var(--bg);
+    }
+
+    .about-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 100px; align-items: center;
+    }
+
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--blue); font-size: 12px; font-weight: 500;
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .section-label::before {
+      content: '';
+      width: 24px; height: 1px; background: var(--blue);
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(28px, 3.5vw, 44px);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.15;
+      letter-spacing: -0.8px;
+      margin-bottom: 24px;
+    }
+
+    .section-body {
+      font-size: 16px; color: var(--muted);
+      line-height: 1.8; margin-bottom: 32px;
+    }
+
+    .about-list {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+
+    .about-list li {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 15px; color: var(--text);
+    }
+
+    .about-list li::before {
+      content: '';
+      flex-shrink: 0;
+      width: 18px; height: 18px; margin-top: 2px;
+      border-radius: 50%;
+      background: var(--blue-dim);
+      border: 1px solid rgba(37,99,235,0.25);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2.5'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+      background-size: 11px;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    /* About visual */
+    .about-visual {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    }
+
+    .about-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: all 0.4s var(--ease);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .about-card:hover {
+      border-color: rgba(37,99,235,0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.08);
+    }
+
+    .about-card-wide {
+      grid-column: span 2;
+      display: flex; gap: 20px; align-items: center;
+    }
+
+    .about-icon {
+      width: 48px; height: 48px; flex-shrink: 0;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(37,99,235,0.04));
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .about-icon svg { width: 24px; height: 24px; stroke: var(--blue); fill: none; stroke-width: 1.5; }
+
+    .about-card h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px; font-weight: 700; color: var(--white);
+      margin-bottom: 6px;
+    }
+
+    .about-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ─── SERVICES ───────────────────────────────────────────────────────────── */
+    #services {
+      padding: 120px 0;
+      background: var(--bg2);
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 640px; margin: 0 auto 70px;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 32px;
+      position: relative; overflow: hidden;
+      transition: all 0.4s var(--ease);
+      cursor: default;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top left, var(--blue-dim), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .service-card:hover::before { opacity: 1; }
+
+    .service-card:hover {
+      border-color: rgba(37,99,235,0.3);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1);
+    }
+
+    .service-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px; font-weight: 700; color: var(--blue);
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .service-icon-wrap {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(37,99,235,0.04));
+      border: 1px solid rgba(37,99,235,0.15);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+
+    .service-card:hover .service-icon-wrap {
+      background: var(--blue);
+      border-color: var(--blue);
+      box-shadow: 0 0 24px var(--blue-glow);
+    }
+
+    .service-icon-wrap svg { width: 24px; height: 24px; stroke: var(--blue); fill: none; stroke-width: 1.5; transition: stroke 0.3s; }
+    .service-card:hover .service-icon-wrap svg { stroke: white; }
+
+    .service-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px; font-weight: 700;
+      color: var(--white); margin-bottom: 12px;
+    }
+
+    .service-card p { font-size: 14px; color: var(--muted); line-height: 1.7; flex-grow: 1; }
+
+    .service-card.featured {
+      background: linear-gradient(135deg, rgba(37,99,235,0.06), rgba(99,102,241,0.03));
+      border-color: rgba(37,99,235,0.2);
+    }
+
+    /* ─── TEAM ───────────────────────────────────────────────────────────────── */
+    #team {
+      padding: 120px 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 50%, rgba(37,99,235,0.04) 0%, transparent 70%),
+        var(--bg);
+    }
+
+    .team-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+    }
+
+    .team-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 24px;
+      text-align: center;
+      transition: all 0.4s var(--ease);
+      position: relative; overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .team-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--blue), #818cf8);
+      transform: scaleX(0);
+      transition: transform 0.4s var(--ease);
+    }
+
+    .team-card:hover::after { transform: scaleX(1); }
+
+    .team-card:hover {
+      border-color: rgba(37,99,235,0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px -10px rgba(0,0,0,0.08);
+    }
+
+    .team-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 22px; font-weight: 800; color: white;
+      position: relative;
+    }
+
+    .team-avatar::before {
+      content: '';
+      position: absolute; inset: -2px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), #818cf8);
+      z-index: -1;
+    }
+
+    .team-avatar .inner {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .team-card h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px; font-weight: 700; color: var(--white);
+      margin-bottom: 6px;
+    }
+
+    .team-card .role {
+      font-size: 12px; color: var(--blue);
+      font-weight: 500; letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .team-card .desc {
+      font-size: 12px; color: var(--muted); line-height: 1.6;
+    }
+
+    /* ─── CONTACT ───────────────────────────────────────────────────────────── */
+    #contact {
+      padding: 120px 0;
+      background: var(--bg2);
+    }
+
+    .contact-inner {
+      display: grid; grid-template-columns: 1fr 1.5fr;
+      gap: 80px; align-items: start;
+    }
+
+    .contact-info-block { padding-top: 8px; }
+
+    .contact-detail {
+      display: flex; align-items: flex-start; gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .contact-icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(37,99,235,0.04));
+      border: 1px solid rgba(37,99,235,0.15);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .contact-icon svg { width: 18px; height: 18px; stroke: var(--blue); fill: none; stroke-width: 1.5; }
+
+    .contact-detail h5 {
+      font-size: 12px; color: var(--muted);
+      letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px;
+    }
+
+    .contact-detail p, .contact-detail a {
+      font-size: 15px; color: var(--text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .contact-detail a:hover { color: var(--blue); }
+
+    /* Map */
+    .contact-map {
+      margin-top: 8px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+
+    .contact-map iframe {
+      width: 100%;
+      height: 200px;
+      border: none;
+      display: block;
+      filter: saturate(0.85) contrast(1.05);
+    }
+
+    .map-link {
+      display: flex; align-items: center; gap: 6px;
+      padding: 10px 16px;
+      background: var(--bg2);
+      font-size: 13px; font-weight: 500;
+      color: var(--blue);
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .map-link:hover {
+      background: var(--blue-dim);
+    }
+
+    /* Form */
+    .contact-form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px;
+      position: relative; overflow: hidden;
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.06);
+    }
+
+    .contact-form::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--blue), transparent);
+    }
+
+    .form-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group { margin-bottom: 16px; }
+
+    .form-group label {
+      display: block;
+      font-size: 13px; font-weight: 500; color: var(--muted);
+      letter-spacing: 0.5px; margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      transition: all 0.3s;
+      outline: none;
+      appearance: none;
+    }
+
+    .form-group select { cursor: pointer; }
+    .form-group select option { background: #ffffff; color: var(--text); }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--blue);
+      background: rgba(37,99,235,0.03);
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.08);
+    }
+
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: #94a3b8; }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 28px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px; font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s var(--ease);
+      box-shadow: 0 8px 24px var(--blue-glow);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 8px;
+    }
+
+    .btn-submit:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 16px 32px var(--blue-glow);
+    }
+
+    .btn-submit.sent { background: #10b981; box-shadow: 0 8px 24px rgba(16,185,129,0.3); }
+
+    /* ─── HERO VISUAL INSIDE CARD ──────────────────────────────────────── */
+    .hero-card-visual {
+      width: 100%;
+      height: 260px;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-card-visual img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-card-visual::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(37,99,235,0.08) 100%);
+      pointer-events: none;
+    }
+
+    /* ─── FORM SUCCESS OVERLAY ─────────────────────────────────────────────── */
+    .form-success-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s var(--ease);
+    }
+
+    .form-success-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .form-success-overlay dotlottie-wc {
+      width: 150px;
+      height: 150px;
+    }
+
+    .success-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #10b981;
+      margin-top: 8px;
+    }
+
+    /* ─── FOOTER ────────────────────────────────────────────────────────────── */
+    footer {
+      background: #0f172a;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 80px 0 32px;
+      color: #cbd5e1;
+    }
+
+    footer .logo-text { color: #ffffff; }
+    footer .logo-text span { color: var(--blue); }
+
+    .footer-inner {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 60px; margin-bottom: 60px;
+    }
+
+    .footer-brand p {
+      font-size: 14px; color: #94a3b8;
+      line-height: 1.8; margin: 20px 0 28px;
+      max-width: 280px;
+    }
+
+    .social-links { display: flex; gap: 10px; }
+
+    .social-link {
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; color: #94a3b8;
+      transition: all 0.3s;
+    }
+
+    .social-link:hover {
+      border-color: var(--blue);
+      background: rgba(37,99,235,0.15);
+      color: var(--blue);
+      transform: translateY(-2px);
+    }
+
+    .social-link svg { width: 16px; height: 16px; fill: currentColor; }
+
+    .footer-col h5 {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px; font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+
+    .footer-col ul a {
+      text-decoration: none;
+      font-size: 14px; color: #94a3b8;
+      transition: color 0.2s;
+    }
+
+    .footer-col ul a:hover { color: var(--blue); }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 32px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .footer-bottom p { font-size: 13px; color: #64748b; }
+
+    .footer-bottom a { color: #64748b; text-decoration: none; font-size: 13px; transition: color 0.2s; }
+    .footer-bottom a:hover { color: var(--blue); }
+
+    .footer-legal { display: flex; gap: 24px; }
+
+    /* ─── REVEAL ANIMATION ──────────────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ─── RESPONSIVE ────────────────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 60px; }
+      .hero-visual { display: none; }
+      .hero-title { font-size: 52px; }
+      .about-inner { grid-template-columns: 1fr; gap: 60px; }
+      .about-visual { grid-template-columns: 1fr 1fr; }
+      .about-hero-img { grid-column: span 2; }
+      .about-hero-img img { height: 180px; }
+      .service-card-img { height: 140px; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .contact-inner { grid-template-columns: 1fr; gap: 50px; }
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .footer-brand { grid-column: span 2; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .stat-item:nth-child(2)::after { display: none; }
+      .tools-grid { grid-template-columns: repeat(3, 1fr); }
+      #hero { padding: 100px 0 80px; }
+      #about, #services, #team, #contact { padding: 90px 0; }
+      #social-proof { padding: 70px 0; }
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero-inner { gap: 40px; }
+      .hero-title { font-size: 36px; letter-spacing: -0.5px; }
+      .hero-sub { font-size: 15px; max-width: 100%; margin-bottom: 32px; }
+      .hero-badge { font-size: 11px; padding: 5px 14px; }
+      #hero { min-height: auto; padding: 100px 0 60px; }
+      .scroll-indicator { display: none; }
+      .section-title { font-size: 28px; }
+      .section-body { font-size: 15px; }
+      .section-header { margin: 0 auto 50px; }
+      #about, #services, #team, #contact { padding: 70px 0; }
+      #social-proof { padding: 56px 0; }
+      .about-inner { gap: 48px; }
+      .about-visual { grid-template-columns: 1fr; }
+      .about-hero-img { grid-column: span 1; }
+      .about-hero-img img { height: 180px; }
+      .about-card-wide { grid-column: span 1; flex-direction: column; }
+      .service-card-img {
+        width: calc(100% + 48px);
+        margin: -28px -24px 16px -24px;
+        height: 140px;
+        border-radius: 16px 16px 0 0;
+      }
+      .about-list li { font-size: 14px; }
+      .services-grid { grid-template-columns: 1fr; gap: 16px; }
+      .service-card { padding: 28px 24px; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .team-card { padding: 24px 16px; }
+      .team-card .desc { font-size: 11px; }
+      .stat-num { font-size: 36px; }
+      .stat-label { font-size: 13px; }
+      .stat-item { padding: 24px 16px; }
+      .stat-item:not(:last-child)::after { display: none; }
+      .stats-grid { gap: 0; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+      .stat-item { border-bottom: 1px solid var(--border); }
+      .stat-item:nth-last-child(-n+2) { border-bottom: none; }
+      .contact-inner { gap: 40px; }
+      .contact-map iframe { height: 180px; }
+      .contact-map { border-radius: 14px; }
+      .contact-form { padding: 28px 20px; }
+      .form-row { grid-template-columns: 1fr; }
+      .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+      .tool-item { padding: 16px 8px; }
+      .tool-icon { width: 36px; height: 36px; }
+      .tool-item span { font-size: 11px; }
+      .sectors-row { gap: 8px; }
+      .sector-tag { font-size: 12px; padding: 6px 14px; }
+      .cta-band { padding: 48px 0; }
+      .cta-band p { font-size: 14px; }
+      .btn-cta-white { padding: 12px 24px; font-size: 14px; }
+      .footer-inner { grid-template-columns: 1fr; gap: 36px; }
+      .footer-brand { grid-column: auto; }
+      .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+      footer { padding: 60px 0 28px; }
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 0 16px; }
+      .hero-title { font-size: 30px; letter-spacing: -0.3px; line-height: 1.12; }
+      .hero-sub { font-size: 14px; line-height: 1.7; }
+      #hero { padding: 90px 0 48px; }
+      .hero-actions { flex-direction: column; }
+      .btn-primary, .btn-ghost { text-align: center; justify-content: center; width: 100%; }
+      #about, #services, #team, #contact { padding: 56px 0; }
+      #social-proof { padding: 48px 0; }
+      .section-title { font-size: 24px; }
+      .section-label { font-size: 11px; }
+      .about-list li { font-size: 13px; gap: 10px; }
+      .about-card { padding: 20px; }
+      .about-card h4 { font-size: 14px; }
+      .about-card p { font-size: 12px; }
+      .service-card { padding: 24px 20px; border-radius: 16px; }
+      .service-card-img {
+        width: calc(100% + 40px);
+        margin: -24px -20px 16px -20px;
+        height: 120px;
+        border-radius: 16px 16px 0 0;
+      }
+      .about-hero-img img { height: 160px; }
+      .service-card h3 { font-size: 16px; }
+      .service-card p { font-size: 13px; }
+      .service-icon-wrap { width: 44px; height: 44px; border-radius: 12px; }
+      .service-icon-wrap svg { width: 20px; height: 20px; }
+      .team-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .team-card { padding: 20px 12px; border-radius: 16px; }
+      .team-card h4 { font-size: 13px; }
+      .team-card .role { font-size: 11px; }
+      .team-card .desc { font-size: 10px; }
+      .team-avatar { width: 52px; height: 52px; font-size: 18px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .stat-num { font-size: 32px; }
+      .stat-item { padding: 20px 12px; }
+      .tools-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+      .tool-item { padding: 14px 6px; gap: 8px; border-radius: 10px; }
+      .tool-icon { width: 32px; height: 32px; font-size: 14px; border-radius: 8px; }
+      .tool-icon svg { width: 18px !important; height: 18px !important; }
+      .tool-item span { font-size: 10px; }
+      .sector-tag { font-size: 11px; padding: 5px 12px; }
+      .sector-tag svg { width: 12px; height: 12px; }
+      .cta-band { padding: 40px 0; }
+      .cta-band h2 { font-size: 22px; }
+      .cta-band p { font-size: 13px; margin-bottom: 24px; }
+      .btn-cta-white { padding: 12px 20px; font-size: 13px; border-radius: 10px; }
+      .contact-map iframe { height: 160px; }
+      .contact-map { border-radius: 12px; }
+      .map-link { font-size: 12px; padding: 8px 14px; }
+      .contact-form { padding: 24px 16px; border-radius: 18px; }
+      .form-group label { font-size: 12px; }
+      .form-group input,
+      .form-group select,
+      .form-group textarea { font-size: 14px; padding: 10px 14px; }
+      .btn-submit { font-size: 14px; padding: 12px 20px; border-radius: 10px; }
+      .contact-detail { gap: 12px; }
+      .contact-icon { width: 36px; height: 36px; }
+      .contact-detail p, .contact-detail a { font-size: 14px; }
+      .contact-detail h5 { font-size: 11px; }
+      footer { padding: 48px 0 24px; }
+      .footer-inner { gap: 28px; margin-bottom: 40px; }
+      .footer-col h5 { font-size: 10px; margin-bottom: 16px; }
+      .footer-col ul { gap: 10px; }
+      .footer-col ul a { font-size: 13px; }
+      .footer-bottom p, .footer-bottom a { font-size: 12px; }
+      .footer-legal { gap: 16px; }
+    }
+
+    @media (max-width: 360px) {
+      .hero-title { font-size: 26px; }
+      .team-grid { grid-template-columns: 1fr; }
+      .tools-grid { grid-template-columns: repeat(2, 1fr); }
+      .stat-num { font-size: 28px; }
+      .logo-mark { width: 32px; height: 32px; font-size: 15px; }
+      .logo-text { font-size: 17px; }
+    }
+
+    /* ─── PREUVE SOCIALE ──────────────────────────────────────────────────── */
+    #social-proof {
+      padding: 80px 0;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .proof-subtitle {
+      font-size: 14px; color: var(--muted);
+      text-align: center; margin-bottom: 40px;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .tool-item {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 10px;
+      padding: 20px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      transition: all 0.3s var(--ease);
+    }
+
+    .tool-item:hover {
+      border-color: rgba(37,99,235,0.25);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px -8px rgba(0,0,0,0.08);
+    }
+
+    .tool-icon {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 700;
+      font-family: 'Syne', sans-serif;
+    }
+
+    .tool-item span {
+      font-size: 12px; font-weight: 500;
+      color: var(--muted); letter-spacing: 0.3px;
+    }
+
+    .sectors-row {
+      display: flex; justify-content: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+
+    .sector-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 18px;
+      background: var(--blue-dim);
+      border: 1px solid rgba(37,99,235,0.12);
+      border-radius: 50px;
+      font-size: 13px; font-weight: 500;
+      color: var(--blue);
+      transition: all 0.3s;
+    }
+
+    .sector-tag:hover {
+      background: rgba(37,99,235,0.1);
+      transform: translateY(-1px);
+    }
+
+    /* ─── CTA BAND ────────────────────────────────────────────────────────── */
+    .cta-band {
+      padding: 60px 0;
+      background:
+        linear-gradient(135deg, rgba(37,99,235,0.92), rgba(29,78,216,0.92)),
+        url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&h=400&fit=crop&q=80') center/cover no-repeat;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-band::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 30% 20%, rgba(255,255,255,0.1) 0%, transparent 70%);
+    }
+
+    .cta-band .container { position: relative; z-index: 1; }
+
+    .cta-band h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 800; color: #ffffff;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .cta-band p {
+      font-size: 16px; color: rgba(255,255,255,0.8);
+      margin-bottom: 28px;
+    }
+
+    .btn-cta-white {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #ffffff;
+      color: #1d4ed8;
+      text-decoration: none;
+      font-weight: 600; font-size: 15px;
+      padding: 14px 32px; border-radius: 12px;
+      transition: all 0.3s var(--ease);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    .btn-cta-white:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ─── CANVAS PARTICLES ───────────────────────────────────────────────────── -->
+<canvas id="particles"></canvas>
+
+<!-- ─── NAV ──────────────────────────────────────────────────────────────── -->
+<nav id="navbar">
+  <div class="container nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-mark">U</div>
+      <span class="logo-text">UP'<span>DAT</span></span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#about">À propos</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#team">Équipe</a></li>
+      <li><a href="#contact" class="nav-cta">Contactez-nous</a></li>
+    </ul>
+
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="close-menu" id="closeMenu">×</button>
+  <a href="#about"    onclick="closeMob()">À propos</a>
+  <a href="#services" onclick="closeMob()">Services</a>
+  <a href="#team"     onclick="closeMob()">Équipe</a>
+  <a href="#contact"  onclick="closeMob()">Contact</a>
+</div>
+
+<!-- ─── HERO ──────────────────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge reveal">Startup · Dakar, Sénégal</div>
+        <h1 class="hero-title reveal reveal-delay-1">
+          Transformez vos <span class="gradient">données</span><br>
+          en <span class="accent">décisions</span>
+        </h1>
+        <p class="hero-sub reveal reveal-delay-2">
+          UP'DAT accompagne les entreprises africaines dans leur transformation numérique — de l'analyse de données à la conception d'applications sur mesure.
+        </p>
+        <div class="hero-actions reveal reveal-delay-3">
+          <a href="#contact" class="btn-primary">
+            Démarrer un projet
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#services" class="btn-ghost">
+            Nos services
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal reveal-delay-2">
+        <div class="hero-card-main">
+          <div class="card-header">
+            <div class="card-dots">
+              <span></span><span></span><span></span>
+            </div>
+            <span class="card-title-sm">Dashboard · Analyse Q4</span>
+          </div>
+          <div class="hero-card-visual">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop&q=80" alt="Dashboard d'analyse de données" loading="eager">
+          </div>
+        </div>
+
+        <div class="floating-badge top-right">
+          <div class="badge-icon green">✓</div>
+          <div class="badge-text">
+            <span class="val">Mission complète</span>
+            <span class="sub">Digitalisation · BNF</span>
+          </div>
+        </div>
+
+        <div class="floating-badge bottom-left">
+          <div class="badge-icon purple">⚡</div>
+          <div class="badge-text">
+            <span class="val">8 experts</span>
+            <span class="sub">Équipe multidisciplinaire</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ─── STATS ─────────────────────────────────────────────────────────────── -->
+<section id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-num">8<span>+</span></div>
+        <div class="stat-label">Experts multidisciplinaires</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-1">
+        <div class="stat-num"><span>100</span>%</div>
+        <div class="stat-label">Sur mesure</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-2">
+        <div class="stat-num">3<span>+</span></div>
+        <div class="stat-label">Secteurs d'intervention</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-3">
+        <div class="stat-num">24<span>h</span></div>
+        <div class="stat-label">Temps de réponse</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ABOUT ─────────────────────────────────────────────────────────────── -->
+<section id="about">
+  <div class="container">
+    <div class="about-inner">
+      <div>
+        <div class="section-label reveal">À propos</div>
+        <h2 class="section-title reveal reveal-delay-1">Une startup sénégalaise au cœur de l'innovation</h2>
+        <p class="section-body reveal reveal-delay-2">
+          UP'DAT est une startup spécialisée dans l'offre de biens et services numériques. Notre équipe multidisciplinaire intervient dans tous les secteurs pour numériser vos besoins avec des solutions sur mesure.
+        </p>
+        <ul class="about-list reveal reveal-delay-3">
+          <li>Management des structures et organisations</li>
+          <li>Innovation via les NTIC</li>
+          <li>Suivi & évaluation de projets</li>
+          <li>Recherche opérationnelle</li>
+          <li>Renforcement de capacités</li>
+          <li>Développement organisationnel PME</li>
+        </ul>
+      </div>
+
+      <div class="about-visual">
+        <div class="about-hero-img reveal">
+          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=400&fit=crop&q=80" alt="Équipe collaborative travaillant sur des solutions numériques" loading="lazy">
+        </div>
+        <div class="about-card about-card-wide reveal">
+          <div class="about-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <div>
+            <h4>Approche sur mesure</h4>
+            <p>Chaque solution est conçue spécifiquement pour répondre à vos défis uniques.</p>
+          </div>
+        </div>
+        <div class="about-card reveal reveal-delay-1">
+          <div class="about-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <h4>Réactivité</h4>
+          <p>Suivi personnalisé et réponse sous 24h garantie.</p>
+        </div>
+        <div class="about-card reveal reveal-delay-2">
+          <div class="about-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <h4>Expertise collective</h4>
+          <p>Docteurs, ingénieurs et spécialistes réunis pour vous.</p>
+        </div>
+        <div class="about-card reveal reveal-delay-3">
+          <div class="about-icon">
+            <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <h4>Impact mesurable</h4>
+          <p>Des KPIs clairs pour chaque projet livré.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SERVICES ───────────────────────────────────────────────────────────── -->
+<section id="services">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label reveal">Nos services</div>
+      <h2 class="section-title reveal reveal-delay-1">Votre vision,<br>notre expertise</h2>
+      <p class="section-body reveal reveal-delay-2" style="margin-bottom:0">Une gamme complète de services numériques sur mesure pour propulser votre organisation.</p>
+    </div>
+
+    <div class="services-grid">
+      <div class="service-card featured reveal">
+        <img class="service-card-img" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop&q=80" alt="Analyse de données et visualisation" loading="lazy">
+        <div class="service-num">01</div>
+        <div class="service-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        </div>
+        <h3>Analyse de Données (Datamining)</h3>
+        <p>Collecte, traitement et visualisation de données complexes pour révéler les insights qui guident vos décisions stratégiques.</p>
+      </div>
+
+      <div class="service-card reveal reveal-delay-1">
+        <img class="service-card-img" src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=250&fit=crop&q=80" alt="Développement applications mobiles" loading="lazy">
+        <div class="service-num">02</div>
+        <div class="service-icon-wrap">
+          <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+        </div>
+        <h3>Applications Mobiles & Web</h3>
+        <p>Conception et développement d'apps mobiles et de sites web sur mesure, optimisés pour l'expérience utilisateur.</p>
+      </div>
+
+      <div class="service-card reveal reveal-delay-2">
+        <img class="service-card-img" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=250&fit=crop&q=80" alt="Formulaires numériques d'enquête" loading="lazy">
+        <div class="service-num">03</div>
+        <div class="service-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <h3>Formulaires Numériques d'Enquête</h3>
+        <p>Conception de formulaires digitaux intuitifs pour la collecte de données terrain, enquêtes de satisfaction et suivi de projets.</p>
+      </div>
+
+      <div class="service-card reveal reveal-delay-3">
+        <img class="service-card-img" src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop&q=80" alt="Tableaux de bord interactifs" loading="lazy">
+        <div class="service-num">04</div>
+        <div class="service-icon-wrap">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <h3>Tableaux de Bord (Dashboard)</h3>
+        <p>Pilotage et supervision de vos projets via des dashboards interactifs, avec analyse en temps réel.</p>
+      </div>
+
+      <div class="service-card featured reveal reveal-delay-4">
+        <img class="service-card-img" src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=250&fit=crop&q=80" alt="Digitalisation des processus" loading="lazy">
+        <div class="service-num">05</div>
+        <div class="service-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h3>Digitalisation des Processus</h3>
+        <p>Dématérialisez vos procédures métiers pour plus d'efficacité, de productivité et de réduction des coûts.</p>
+      </div>
+
+      <div class="service-card reveal reveal-delay-4">
+        <img class="service-card-img" src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&h=250&fit=crop&q=80" alt="Cartographie digitale" loading="lazy">
+        <div class="service-num">06</div>
+        <div class="service-icon-wrap">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+        </div>
+        <h3>Cartographie Digitale</h3>
+        <p>Création de solutions de cartographie digitale pour la gestion et la visualisation de données géographiques.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PREUVE SOCIALE ──────────────────────────────────────────────────────── -->
+<section id="social-proof">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label reveal">Expertise</div>
+      <h2 class="section-title reveal reveal-delay-1">Les outils que nous maîtrisons</h2>
+      <p class="proof-subtitle reveal reveal-delay-2">Technologies et plateformes au cœur de nos solutions</p>
+    </div>
+
+    <div class="tools-grid">
+      <div class="tool-item reveal">
+        <div class="tool-icon" style="background: rgba(55,118,171,0.1); color: #3776AB;">Py</div>
+        <span>Python</span>
+      </div>
+      <div class="tool-item reveal reveal-delay-1">
+        <div class="tool-icon" style="background: rgba(39,104,177,0.1); color: #2768B1;">R</div>
+        <span>R / RStudio</span>
+      </div>
+      <div class="tool-item reveal reveal-delay-2">
+        <div class="tool-icon" style="background: rgba(242,184,0,0.1); color: #F2B800;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F2B800" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <span>Power BI</span>
+      </div>
+      <div class="tool-item reveal reveal-delay-3">
+        <div class="tool-icon" style="background: rgba(255,153,0,0.1); color: #FF9900;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF9900" stroke-width="1.5"><path d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"/><path d="M14.5 9l-5 6M9.5 9l5 6"/></svg>
+        </div>
+        <span>AWS</span>
+      </div>
+      <div class="tool-item reveal reveal-delay-4">
+        <div class="tool-icon" style="background: rgba(0,114,198,0.1); color: #0072C6;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0072C6" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <span>Azure</span>
+      </div>
+      <div class="tool-item reveal reveal-delay-4">
+        <div class="tool-icon" style="background: rgba(52,168,83,0.1); color: #34A853;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#34A853" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <span>Excel / GSheets</span>
+      </div>
+    </div>
+
+    <div class="section-header" style="margin-bottom: 24px;">
+      <p class="proof-subtitle reveal">Secteurs d'intervention</p>
+    </div>
+    <div class="sectors-row reveal reveal-delay-1">
+      <div class="sector-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        Santé
+      </div>
+      <div class="sector-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        Finance
+      </div>
+      <div class="sector-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+        Éducation
+      </div>
+      <div class="sector-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        ONG & Développement
+      </div>
+      <div class="sector-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+        Entreprises & PME
+      </div>
+      <div class="sector-tag">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+        Administration publique
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TEAM ───────────────────────────────────────────────────────────────── -->
+<section id="team">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label reveal">L'équipe</div>
+      <h2 class="section-title reveal reveal-delay-1">Des experts <br>qui font la différence</h2>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <div class="team-avatar">
+          <div class="inner" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">M</div>
+        </div>
+        <h4>Dr. Mathématiques</h4>
+        <div class="role">Data Scientist</div>
+        <p class="desc">Modélisation des données complexes et aléatoires</p>
+      </div>
+
+      <div class="team-card reveal reveal-delay-1">
+        <div class="team-avatar">
+          <div class="inner" style="background: linear-gradient(135deg, #818cf8, #6366f1);">S</div>
+        </div>
+        <h4>Dr. Stats Médicales</h4>
+        <div class="role">Biostatisticien</div>
+        <p class="desc">Méthodes statistiques en grande dimension appliquées au domaine médical</p>
+      </div>
+
+      <div class="team-card reveal reveal-delay-2">
+        <div class="team-avatar">
+          <div class="inner" style="background: linear-gradient(135deg, #06b6d4, #0284c7);">I</div>
+        </div>
+        <h4>Informaticien</h4>
+        <div class="role">Digital Design Manager</div>
+        <p class="desc">Création d'expériences utilisateur exceptionnelles</p>
+      </div>
+
+      <div class="team-card reveal reveal-delay-3">
+        <div class="team-avatar">
+          <div class="inner" style="background: linear-gradient(135deg, #f59e0b, #d97706);">S</div>
+        </div>
+        <h4>Expert Cybersécurité</h4>
+        <div class="role">Crypto-sécurité</div>
+        <p class="desc">Sécurisation de l'information et transmission des données</p>
+      </div>
+
+      <div class="team-card reveal">
+        <div class="team-avatar">
+          <div class="inner" style="background: linear-gradient(135deg, #10b981, #059669);">F</div>
+        </div>
+        <h4>Finance & Modélisation</h4>
+        <div class="role">Quant Analyst</div>
+        <p class="desc">Modélisation financière et analyse des marchés</p>
+      </div>
+
+      <div class="team-card reveal reveal-delay-1">
+        <div class="team-avatar">
+          <div class="inner" style="background: linear-gradient(135deg, #ec4899, #db2777);">M</div>
+        </div>
+        <h4>Marketing Stratégie</h4>
+        <div class="role">Growth Strategist</div>
+        <p class="desc">Stratégies innovantes pour la promotion numérique</p>
+      </div>
+
+      <div class="team-card reveal reveal-delay-2">
+        <div class="team-avatar">
+          <div class="inner" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">S</div>
+        </div>
+        <h4>Santé Publique</h4>
+        <div class="role">Spécialiste m-health</div>
+        <p class="desc">Master Formatrice en management de programmes de santé</p>
+      </div>
+
+      <div class="team-card reveal reveal-delay-3">
+        <div class="team-avatar">
+          <div class="inner" style="background: linear-gradient(135deg, #f97316, #ea580c);">A</div>
+        </div>
+        <h4>Administration</h4>
+        <div class="role">Business Manager</div>
+        <p class="desc">Leadership et gestion efficace des affaires numériques</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA BAND ───────────────────────────────────────────────────────────── -->
+<section class="cta-band">
+  <div class="container">
+    <h2 class="reveal">Prêt à digitaliser vos processus ?</h2>
+    <p class="reveal reveal-delay-1">Notre équipe d'experts vous accompagne de la conception au déploiement.</p>
+    <a href="#contact" class="btn-cta-white reveal reveal-delay-2">
+      Démarrer votre projet
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ─── CONTACT ─────────────────────────────────────────────────────────────── -->
+<section id="contact">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label reveal">Contact</div>
+      <h2 class="section-title reveal reveal-delay-1">Parlons de votre projet</h2>
+    </div>
+
+    <div class="contact-inner">
+      <div class="contact-info-block">
+        <p class="section-body reveal">Vous avez un défi technologique ? Notre équipe vous recontacte sous 24h pour trouver la solution adaptée.</p>
+
+        <div class="contact-detail reveal reveal-delay-1">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </div>
+          <div>
+            <h5>Adresse</h5>
+            <p>HLM Maristes lot 26, Dakar, Sénégal</p>
+          </div>
+        </div>
+
+        <div class="contact-detail reveal reveal-delay-2">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </div>
+          <div>
+            <h5>Email</h5>
+            <a href="mailto:updatgroupe@gmail.com">updatgroupe@gmail.com</a>
+          </div>
+        </div>
+
+        <div class="contact-detail reveal reveal-delay-3">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.05 2.18 2 2 0 012.04 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          </div>
+          <div>
+            <h5>Téléphone</h5>
+            <a href="tel:+221774478461">+221 77 447 84 61</a>
+          </div>
+        </div>
+
+        <div class="contact-map reveal reveal-delay-4">
+          <iframe
+            src="https://www.openstreetmap.org/export/embed.html?bbox=-17.475%2C14.700%2C-17.440%2C14.725&amp;layer=mapnik&amp;marker=14.7125%2C-17.4575"
+            title="Localisation UP'DAT — HLM Maristes, Dakar"
+            loading="lazy"
+            referrerpolicy="no-referrer"
+            allowfullscreen
+          ></iframe>
+          <a href="https://www.openstreetmap.org/?mlat=14.7125&mlon=-17.4575#map=16/14.7125/-17.4575" target="_blank" rel="noopener noreferrer" class="map-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Voir sur la carte
+          </a>
+        </div>
+      </div>
+
+      <div class="contact-form reveal reveal-delay-2">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom complet</label>
+            <input type="text" id="fname" placeholder="Ex: Mamadou Gueye">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="femail" placeholder="nom@entreprise.com">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Service souhaité</label>
+          <select id="fservice">
+            <option value="">Sélectionnez un service</option>
+            <option>Analyse de données (Datamining)</option>
+            <option>Développement Web & Mobile</option>
+            <option>Formulaires numériques</option>
+            <option>Digitalisation des processus</option>
+            <option>Dashboard / Tableau de bord</option>
+            <option>Cartographie digitale</option>
+            <option>Autre</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="fmsg" placeholder="Décrivez brièvement votre besoin ou projet..."></textarea>
+        </div>
+        <button class="btn-submit" id="submitBtn" onclick="handleSubmit()">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Envoyer le message
+        </button>
+
+        <div class="form-success-overlay" id="formSuccessOverlay">
+          <dotlottie-wc src="https://assets-v2.lottiefiles.com/a/b36cb88a-1150-11ee-8f49-9b6c0bfe85bb/Y50UE4gUwg.lottie" autoplay id="successLottie"></dotlottie-wc>
+          <p class="success-text">Message envoyé avec succès !</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─────────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <div class="logo-mark">U</div>
+          <span class="logo-text">UP'<span>DAT</span></span>
+        </a>
+        <p>Data Analysis and Technologie. Dans l'ère du numérique, mettez-vous à jour ! Une startup sénégalaise au service de votre transformation digitale.</p>
+        <div class="social-links">
+          <!-- LinkedIn -->
+          <a href="#" class="social-link" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <!-- Twitter/X -->
+          <a href="#" class="social-link" aria-label="Twitter">
+            <svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+          </a>
+          <!-- Facebook -->
+          <a href="#" class="social-link" aria-label="Facebook">
+            <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a href="#services">Datamining</a></li>
+          <li><a href="#services">Développement Web & Mobile</a></li>
+          <li><a href="#services">Formulaires numériques</a></li>
+          <li><a href="#services">Dashboards</a></li>
+          <li><a href="#services">Digitalisation</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Entreprise</h5>
+        <ul>
+          <li><a href="#about">À propos</a></li>
+          <li><a href="#team">Notre équipe</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="mailto:updatgroupe@gmail.com">updatgroupe@gmail.com</a></li>
+          <li><a href="tel:+221774478461">+221 77 447 84 61</a></li>
+          <li><a href="#">Dakar, Sénégal</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 UP'DAT — Tous droits réservés.</p>
+      <div class="footer-legal">
+        <a href="#">Mentions légales</a>
+        <a href="#">Confidentialité</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── JAVASCRIPT ─────────────────────────────────────────────────────────── -->
+<script>
+/* ── PARTICLES CANVAS ──────────────────────────────────────────────────────── */
+(function () {
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      r: Math.random() * 1.5 + 0.3,
+      dx: (Math.random() - 0.5) * 0.3,
+      dy: (Math.random() - 0.5) * 0.3,
+      o: Math.random() * 0.5 + 0.1
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(37,99,235,${p.o * 0.35})`;
+      ctx.fill();
+      p.x += p.dx;
+      p.y += p.dy;
+      if (p.x < 0 || p.x > W) p.dx *= -1;
+      if (p.y < 0 || p.y > H) p.dy *= -1;
+    });
+
+    // Draw lines between close particles
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(37,99,235,${0.08 * (1 - dist / 120)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── NAV SCROLL ────────────────────────────────────────────────────────────── */
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ── MOBILE MENU ───────────────────────────────────────────────────────────── */
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.add('open');
+  document.body.style.overflow = 'hidden';
+});
+
+document.getElementById('closeMenu').addEventListener('click', closeMob);
+
+function closeMob() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ── REVEAL ON SCROLL ──────────────────────────────────────────────────────── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ── FORM SUBMIT ────────────────────────────────────────────────────────────── */
+function handleSubmit() {
+  const btn = document.getElementById('submitBtn');
+  const overlay = document.getElementById('formSuccessOverlay');
+  const name = document.getElementById('fname').value.trim();
+  const email = document.getElementById('femail').value.trim();
+
+  if (!name || !email) {
+    btn.textContent = '⚠ Remplissez les champs requis';
+    setTimeout(() => {
+      btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Envoyer le message';
+    }, 2500);
+    return;
+  }
+
+  btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Envoi en cours...';
+  btn.style.opacity = '0.7';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    document.getElementById('fname').value = '';
+    document.getElementById('femail').value = '';
+    document.getElementById('fservice').selectedIndex = 0;
+    document.getElementById('fmsg').value = '';
+
+    btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Envoyer le message';
+    btn.style.opacity = '1';
+    btn.disabled = false;
+
+    overlay.classList.add('active');
+
+    setTimeout(() => {
+      overlay.classList.remove('active');
+    }, 3500);
+  }, 2000);
+}
+
+/* ── ANIMATED COUNTER ───────────────────────────────────────────────────────── */
+function animateCounter(el, target, suffix) {
+  let start = 0;
+  const step = target / 40;
+  const timer = setInterval(() => {
+    start += step;
+    if (start >= target) {
+      el.innerHTML = target + `<span>${suffix}</span>`;
+      clearInterval(timer);
+    } else {
+      el.innerHTML = Math.floor(start) + `<span>${suffix}</span>`;
+    }
+  }, 40);
+}
+
+const statsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const nums = entry.target.querySelectorAll('.stat-num');
+      const data = [
+        { val: 8, sfx: '+' },
+        { val: 100, sfx: '%' },
+        { val: 3, sfx: '+' },
+        { val: 24, sfx: 'h' }
+      ];
+      nums.forEach((n, i) => animateCounter(n, data[i].val, data[i].sfx));
+      statsObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+const statsEl = document.querySelector('.stats-grid');
+if (statsEl) statsObserver.observe(statsEl);
+</script>
+</body>
+</html>
